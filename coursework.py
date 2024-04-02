@@ -41,10 +41,14 @@ class APIVKclient:
 
     def save_photos(self):
         result = []
+        name_set = set()
         for photo in tqdm(self.get_photo_info(), desc="Процесс выполнения"):
             url_image = photo['sizes'][-1]['url']
             response_photo = requests.get(url_image)
             name_photo = f'{photo['likes']['count']}.jpg'
+            if name_photo in name_set:
+                name_photo = f'{photo['likes']['count']}_{photo['date']}'
+            name_set.add(name_photo)
             size = photo['sizes'][-1]['type']
             response = requests.get(self.create_folder_url(),
                                     headers={'Authorization': self.token_ya},
